@@ -1,21 +1,18 @@
 {
-  "name": "nearest-color",
-  "version": "0.4.2",
-  "description": "Find the nearest color",
-  "main": "nearestColor.js",
+  "name": "nearest-colors",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "test": "autodoc -t nearestColor.js"
+    "prepublish": "npm run build",
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [
-    "color",
-    "colors"
-  ],
-  "author": "Dan Tao <daniel.tao@gmail.com>",
-  "license": "MIT",
-  "repository": "https://github.com/dtao/nearest-color",
-  "dependencies": {
-  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "devDependencies": {
-    "autodoc": ">= 0.6.1"
+    "typescript": "^2.8.3"
   }
 }
