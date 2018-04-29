@@ -15,6 +15,10 @@ export interface AuthenticColor {
   appletonColourCode: string;
 }
 
+export interface CustomColorObject {
+  [key: string]: string;
+}
+
 export interface ColorMatch {
   name: string;
   value: string;
@@ -216,10 +220,10 @@ function createColorSpec(input: string | RGB, name?: string): ColorSpec | null {
  * @return {Array.<ColorSpec>} An array of {@link ColorSpec} objects
  *     representing the same colors passed in.
  */
-function mapColors(colors: AuthenticColor[] | StandardColors): ColorSpec[]  {
+function mapColors(colors: CustomColorObject[] | StandardColors, name = "name", hexCode = "value"): ColorSpec[]  {
   if (colors instanceof Array) {
     return colors.reduce((result: ColorSpec[], color) => {
-      const newColor = createColorSpec(color.hexCode, color.appletonColourCode);
+      const newColor = createColorSpec(color[name], color[hexCode]);
       if (newColor !== null) {
         result.push(newColor);
       }
@@ -346,8 +350,8 @@ function nearestColor(needle: RGB | string, colors: ColorSpec[]): ColorMatch | s
  *
  * getAnyColor('#888'); // => '#444'
  */
-function nearestFrom(availableColors: StandardColors | AuthenticColor[]): (hex: string) => string | ColorMatch | null {
-  const colors = mapColors(availableColors);
+function nearestFrom(availableColors: StandardColors | CustomColorObject[], name = "name", hexCode = "value"): (hex: string) => string | ColorMatch | null {
+  const colors = mapColors(availableColors, name, hexCode);
   const nearestColorBase = nearestColor;
 
   const matcher = function nearestColorFrom(hex: string) {
