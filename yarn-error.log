@@ -17,7 +17,7 @@ npm manifest:
   {
     "name": "nearest-colors",
     "version": "1.0.0",
-    "description": "",
+    "description": "Find the nearest color(s)",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
@@ -26,7 +26,7 @@ npm manifest:
       "test": "mocha -r ts-node/register lib/**/*.spec.ts"
     },
     "keywords": [],
-    "author": "",
+    "author": "Awaiting Image",
     "license": "ISC",
     "devDependencies": {
       "@types/chai": "^4.1.3",

@@ -75,10 +75,14 @@ describe('nearestFrom function', () => {
   });
 
   it('expect #ff1 to be nearest to Bright Yellow 3/4 in custom colours', () => {
+    const expectedResult = { 
+      name: 'Bright Yellow 3/4',
+      value: '#F7EB34',
+      rgb: { r: 247, g: 235, b: 52 },
+      distance: 41.09744517606904 };
     const nearestColor = nearestFrom(CUSTOM_COLORS, "appletonColourCode", "hexCode");
     const result = nearestColor("#ff1");
-    if (result && typeof result == "object")
-      expect(result.name).to.equal("Bright Yellow 3/4");
+    expect(result).to.deep.equal(expectedResult);
   });
 
 });

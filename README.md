@@ -1,20 +1,37 @@
-# nearest-color
+# nearest-colors
 
-Find the nearest color given a predefined list of colors.
+Find the nearest x number of colors given a predefined list of colors. This has been built using the code from [dtao/nearest-color](https://github.com/dtao/nearest-color):. 
+Key differences in this package as apposed to nearest-color are:
+* Supporting types using Typescript.
+* Additional exported functions such as 'rgbaToHex'.
+* Allows arrays of custom color objects as the predefined list of colors.
+* Returns an array of nearest colors if more than 1 is requested.
 
 ## Usage
 
 ```javascript
-var colors = {
-  red: '#f00',
-  yellow: '#ff0',
-  blue: '#00f'
-};
+const CUSTOM_COLORS = [{
+  "appletonColourCode": "Bright Yellow 3/4",
+  "naturalDye": "Weld",
+  "mordent": "Alum",
+  "Yarn": "White wool",
+  "colourProduced": "Strong",
+  "hexCode": "#F7EB34",
+},
+{
+  "appletonColourCode": "Heraldic Gold 4",
+  "naturalDye": "Weld",
+  "mordent": "Alum",
+  "Yarn": "White wool",
+  "colourProduced": "Dark",
+  "hexCode": "#D1BD3D",
+}];
 
-var nearestColor = require('nearest-color').from(colors);
+import { nearestFrom } from "nearest-colors";
 
-nearestColor('#800'); // => { name: 'red', value: '#f00', rgb: { r: 255, g: 0, b: 0 }, distance: 119 }
-nearestColor('#ffe'); // => { name: 'yellow', value: '#ff0', rgb: { r: 255, g: 255, b: 0 }, distance: 238 }
+const nearestColor2 = nearestFrom(CUSTOM_COLORS, "appletonColourCode", "hexCode");
+
+nearestColor('#ff1'); // => { name: 'Bright Yellow 3/4', value: '#F7EB34', rgb: { r: 247, g: 235, b: 52 }, distance: 41.09744517606904 }
 ```
 
 ## How it works

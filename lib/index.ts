@@ -10,11 +10,6 @@ export interface ColorSpec {
   rgb: RGB;
 }
 
-export interface AuthenticColor {
-  hexCode: string;
-  appletonColourCode: string;
-}
-
 export interface CustomColorObject {
   [key: string]: string;
 }
@@ -27,8 +22,6 @@ export interface ColorMatch {
 }
 
 export interface StandardColors { [s: string]: string; }
-
-const VERSION = "0.5.0";
 
 /**
  * A map from the names of standard CSS colors to their hex values.
@@ -206,7 +199,6 @@ function createColorSpec(input: string | RGB, name?: string): ColorSpec | null {
     color.rgb = input;
     color.source = rgbToHex(input);
   }
-
   return color;
 }
 
@@ -221,9 +213,10 @@ function createColorSpec(input: string | RGB, name?: string): ColorSpec | null {
  *     representing the same colors passed in.
  */
 function mapColors(colors: CustomColorObject[] | StandardColors, name = "name", hexCode = "value"): ColorSpec[]  {
+
   if (colors instanceof Array) {
     return colors.reduce((result: ColorSpec[], color) => {
-      const newColor = createColorSpec(color[name], color[hexCode]);
+      const newColor = createColorSpec(color[hexCode], color[name]);
       if (newColor !== null) {
         result.push(newColor);
       }
@@ -327,14 +320,24 @@ function nearestColor(needle: RGB | string, colors: ColorSpec[]): ColorMatch | s
  *   'pale blue': '#def'
  * };
  *
- * var bgColors = [
- *   '#eee',
- *   '#444'
- * ];
+ * const CUSTOM_COLORS = [{
+    "appletonColourCode": "Bright Yellow 3/4",
+    "naturalDye": "Weld",
+    "mordent": "Alum",
+    "Yarn": "White wool",
+    "colourProduced": "Strong",
+    "hexCode": "#F7EB34",
+  },{
+    "appletonColourCode": "Heraldic Gold 4",
+    "naturalDye": "Weld",
+    "mordent": "Alum",
+    "Yarn": "White wool",
+    "colourProduced": "Dark",
+    "hexCode": "#D1BD3D",
+  }];
  *
  * var getColor = nearestColor.from(colors);
- * var getBGColor = getColor.from(bgColors);
- * var getAnyColor = nearestColor.from(colors).or(bgColors);
+ * var getCustomColor = getColor.from(CUSTOM_COLORS);
  *
  * getColor('#f00');
  * // => { name: 'maroon', value: '#800', rgb: { r: 136, g: 0, b: 0 }, distance: 119}
@@ -342,13 +345,8 @@ function nearestColor(needle: RGB | string, colors: ColorSpec[]): ColorMatch | s
  * getColor('#ff0');
  * // => { name: 'light yellow', value: '#ffff33', rgb: { r: 255, g: 255, b: 51 }, distance: 51}
  *
- * getBGColor('#fff'); // => '#eee'
- * getBGColor('#000'); // => '#444'
- *
- * getAnyColor('#f00');
- * // => { name: 'maroon', value: '#800', rgb: { r: 136, g: 0, b: 0 }, distance: 119}
- *
- * getAnyColor('#888'); // => '#444'
+ * getCustomColor('#fff', 'appletonColourCode', 'hexCode').value; // => '#F7EB34'
+ * getCustomColor('#000', 'appletonColourCode', 'hexCode').value; // => '#D1BD3D'
  */
 function nearestFrom(availableColors: StandardColors | CustomColorObject[], name = "name", hexCode = "value"): (hex: string) => string | ColorMatch | null {
   const colors = mapColors(availableColors, name, hexCode);
@@ -357,17 +355,6 @@ function nearestFrom(availableColors: StandardColors | CustomColorObject[], name
   const matcher = function nearestColorFrom(hex: string) {
     return nearestColorBase(hex, colors);
   };
-
-  // Keep the 'from' method, to support changing the list of available colors
-  // multiple times without needing to keep a reference to the original
-  // nearestColor function.
-  // matcher.from = nearestFrom;
-
-  // // Also provide a way to combine multiple color lists.
-  // matcher.or = function or(alternateColors) {
-  //   const extendedColors = colors.concat(mapColors(alternateColors));
-  //   return nearestFrom(extendedColors);
-  // };
 
   return matcher;
 }
