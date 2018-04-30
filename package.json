@@ -10,8 +10,9 @@
     "test": "mocha -r ts-node/register lib/**/*.spec.ts"
   },
   "keywords": [],
-  "author": "Awaiting Image",
+  "author": "Liam Farrell <liam@awaitingimage.com>",
   "license": "ISC",
+  "repository": "https://github.com/awaitingimage/nearest-colors",
   "devDependencies": {
     "@types/chai": "^4.1.3",
     "@types/mocha": "^5.2.0",
