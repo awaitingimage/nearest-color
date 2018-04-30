@@ -65,13 +65,18 @@ describe('rgbaToHex function', () => {
 
 });
 
-describe('nearestFrom function', () => {
+describe('nearestFrom function with only 1 result', () => {
 
   it('expect #ff1 to be nearest to yellow in standard colours', () => {
+    const expectedResult = { 
+      name: 'yellow',
+      value: '#ff0',
+      rgb: { r: 255, g: 255, b: 0 },
+      distance: 17 
+    };
     const nearestColor = nearestFrom(STANDARD_COLORS);
     const result = nearestColor("#ff1");
-    if (result && typeof result == "object")
-      expect(result.name).to.equal("yellow");
+    expect(result).to.deep.equal(expectedResult);
   });
 
   it('expect #ff1 to be nearest to Bright Yellow 3/4 in custom colours', () => {
@@ -85,4 +90,30 @@ describe('nearestFrom function', () => {
     expect(result).to.deep.equal(expectedResult);
   });
 
+  it('expect #D1C189 to be nearest to Honeysuckle Yellow 2 in custom colours', () => {
+    const expectedResult = { 
+      name: 'Honeysuckle Yellow 2',
+      value: '#D1C189',
+      rgb: { r: 209, g: 193, b: 137 },
+      distance: 0 };
+    const nearestColor = nearestFrom(CUSTOM_COLORS, "appletonColourCode", "hexCode");
+    const result = nearestColor("#D1C189");
+    expect(result).to.deep.equal(expectedResult);
+  });
+});
+
+describe('nearestFrom function with multiple results', () => {
+  it('expect #D1C189 to be nearest to Honeysuckle Yellow 2 and then Heraldic Gold', () => {
+    const expectedResult = [ { name: 'Honeysuckle Yellow 2',
+    value: '#D1C189',
+    rgb: { r: 209, g: 193, b: 137 },
+    distance: 0 },
+  { name: 'Heraldic Gold 4',
+    value: '#D1BD3D',
+    rgb: { r: 209, g: 189, b: 61 },
+    distance: 76.10519036176179 } ];
+    const nearestColor = nearestFrom(CUSTOM_COLORS, "appletonColourCode", "hexCode");
+    const result = nearestColor("#D1C189", 2);
+    expect(result).to.deep.equal(expectedResult);
+  });
 });

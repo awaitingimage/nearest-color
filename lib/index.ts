@@ -233,6 +233,14 @@ function mapColors(colors: CustomColorObject[] | StandardColors, name = "name", 
   }, []);
 }
 
+function compare(color1: ColorMatch, color2: ColorMatch) {
+  if (color1.distance < color2.distance)
+    return -1;
+  if (color1.distance > color2.distance)
+    return 1;
+  return 0;
+}
+
 /**
  * Gets the nearest color, from the given list of {@link ColorSpec} objects
  * (which defaults to {@link nearestColor.DEFAULT_COLORS}).
@@ -259,7 +267,7 @@ function mapColors(colors: CustomColorObject[] | StandardColors, name = "name", 
  * nearestColor('red');                    // => '#f00'
  * nearestColor('foo');                    // => null
  */
-function nearestColor(needle: RGB | string, colors: ColorSpec[]): ColorMatch | string | null {
+function nearestColor(needle: RGB | string, colors: ColorSpec[], amount = 1): ColorMatch | ColorMatch[] {
   const convertedNeedle = parseColorToRGB(needle);
   if (convertedNeedle == null) {
     throw new Error("Provided colour does not compute!");
@@ -270,35 +278,30 @@ function nearestColor(needle: RGB | string, colors: ColorSpec[]): ColorMatch | s
   let rgb;
   let value;
 
+  let colorMatchArray: ColorMatch[]  = [];
+
   for (const color of colors) {
-    rgb = color.rgb;
 
     distance = Math.sqrt(
-      Math.pow(convertedNeedle.r - rgb.r, 2) +
-      Math.pow(convertedNeedle.g - rgb.g, 2) +
-      Math.pow(convertedNeedle.b - rgb.b, 2),
+      Math.pow(convertedNeedle.r - color.rgb.r, 2) +
+      Math.pow(convertedNeedle.g - color.rgb.g, 2) +
+      Math.pow(convertedNeedle.b - color.rgb.b, 2),
     );
 
-    if (distance < minDistance) {
-      minDistance = distance;
-      value = color;
-    }
+    colorMatchArray.push({
+      name: color.name? color.name : color.source,
+      value: color.source,
+      rgb: color.rgb,
+      distance: distance,
+    })
   }
+  colorMatchArray.sort(compare);
 
-  if (value && value.name) {
-    return {
-      name: value.name,
-      value: value.source,
-      rgb: value.rgb,
-      distance: minDistance,
-    };
+  if (amount <= 1){
+   return colorMatchArray[0];
+  }else{
+    return colorMatchArray.slice(0,amount);
   }
-
-  if (value && value.source) {
-    return value.source;
-  }
-
-  return null;
 
 }
 
@@ -348,12 +351,12 @@ function nearestColor(needle: RGB | string, colors: ColorSpec[]): ColorMatch | s
  * getCustomColor('#fff', 'appletonColourCode', 'hexCode').value; // => '#F7EB34'
  * getCustomColor('#000', 'appletonColourCode', 'hexCode').value; // => '#D1BD3D'
  */
-function nearestFrom(availableColors: StandardColors | CustomColorObject[], name = "name", hexCode = "value"): (hex: string) => string | ColorMatch | null {
+function nearestFrom(availableColors: StandardColors | CustomColorObject[], name = "name", hexCode = "value"): (hex: string, amount?: number) => ColorMatch | ColorMatch[] {
   const colors = mapColors(availableColors, name, hexCode);
   const nearestColorBase = nearestColor;
 
-  const matcher = function nearestColorFrom(hex: string) {
-    return nearestColorBase(hex, colors);
+  const matcher = function nearestColorFrom(hex: string, amount = 1) {
+    return nearestColorBase(hex, colors, amount);
   };
 
   return matcher;

@@ -1,6 +1,6 @@
 # nearest-colors
 
-Find the nearest x number of colors given a predefined list of colors. This has been built using the code from [dtao/nearest-color](https://github.com/dtao/nearest-color):. 
+Find the nearest x number of colors given a predefined list of colors. This has been built using the code from [dtao/nearest-color](https://github.com/dtao/nearest-color). 
 Key differences in this package as apposed to nearest-color are:
 * Supporting types using Typescript.
 * Additional exported functions such as 'rgbaToHex'.
@@ -29,7 +29,7 @@ const CUSTOM_COLORS = [{
 
 import { nearestFrom } from "nearest-colors";
 
-const nearestColor2 = nearestFrom(CUSTOM_COLORS, "appletonColourCode", "hexCode");
+const nearestColor = nearestFrom(CUSTOM_COLORS, "appletonColourCode", "hexCode");
 
 nearestColor('#ff1'); // => { name: 'Bright Yellow 3/4', value: '#F7EB34', rgb: { r: 247, g: 235, b: 52 }, distance: 41.09744517606904 }
 ```
